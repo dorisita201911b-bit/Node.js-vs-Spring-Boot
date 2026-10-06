@@ -1,6 +1,8 @@
 {
   "info": {
     "name": "API Productos Node.js - CRUD",
+    "_postman_id": "api-productos-node-crud",
+    "description": "Colección completa de pruebas para el CRUD de Productos en Node.js + Express con respuestas JSON documentadas.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
@@ -8,50 +10,317 @@
       "name": "1. Obtener todos los productos (GET)",
       "request": {
         "method": "GET",
-        "url": "http://localhost:3000/productos"
-      }
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/productos",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "productos"
+          ]
+        },
+        "description": "Retorna la lista completa de productos en memoria con estado 200 OK."
+      },
+      "response": [
+        {
+          "name": "200 OK - Lista de productos",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/productos",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "productos"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json; charset=utf-8"
+            }
+          ],
+          "body": "[\n  {\n    \"id\": 1,\n    \"nombre\": \"Laptop Gamer\",\n    \"precio\": 2500,\n    \"stock\": 10\n  },\n  {\n    \"id\": 2,\n    \"nombre\": \"Mouse Inalámbrico\",\n    \"precio\": 50,\n    \"stock\": 30\n  },\n  {\n    \"id\": 3,\n    \"nombre\": \"Teclado Mecánico\",\n    \"precio\": 120,\n    \"stock\": 15\n  }\n]"
+        }
+      ]
     },
     {
       "name": "2. Obtener producto por ID (GET)",
       "request": {
         "method": "GET",
-        "url": "http://localhost:3000/productos/1"
-      }
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/productos/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "productos",
+            "1"
+          ]
+        },
+        "description": "Retorna un producto según el parámetro ID en la URL."
+      },
+      "response": [
+        {
+          "name": "200 OK - Producto encontrado",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/productos/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "productos",
+                "1"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json; charset=utf-8"
+            }
+          ],
+          "body": "{\n  \"id\": 1,\n  \"nombre\": \"Laptop Gamer\",\n  \"precio\": 2500,\n  \"stock\": 10\n}"
+        },
+        {
+          "name": "404 Not Found - Producto inexistente",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/productos/99",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "productos",
+                "99"
+              ]
+            }
+          },
+          "status": "Not Found",
+          "code": 404,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json; charset=utf-8"
+            }
+          ],
+          "body": "{\n  \"mensaje\": \"Producto no encontrado\"\n}"
+        }
+      ]
     },
     {
       "name": "3. Crear un nuevo producto (POST)",
       "request": {
         "method": "POST",
         "header": [
-          { "key": "Content-Type", "value": "application/json" }
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
         ],
         "body": {
           "mode": "raw",
           "raw": "{\n  \"nombre\": \"Monitor 24 pulgadas\",\n  \"precio\": 800,\n  \"stock\": 5\n}"
         },
-        "url": "http://localhost:3000/productos"
-      }
+        "url": {
+          "raw": "http://localhost:3000/productos",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "productos"
+          ]
+        },
+        "description": "Crea un producto nuevo asignando un ID incremental y retornando HTTP 201 Created."
+      },
+      "response": [
+        {
+          "name": "201 Created - Producto creado",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Monitor 24 pulgadas\",\n  \"precio\": 800,\n  \"stock\": 5\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/productos",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "productos"
+              ]
+            }
+          },
+          "status": "Created",
+          "code": 201,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json; charset=utf-8"
+            }
+          ],
+          "body": "{\n  \"id\": 4,\n  \"nombre\": \"Monitor 24 pulgadas\",\n  \"precio\": 800,\n  \"stock\": 5\n}"
+        }
+      ]
     },
     {
       "name": "4. Actualizar producto (PUT)",
       "request": {
         "method": "PUT",
         "header": [
-          { "key": "Content-Type", "value": "application/json" }
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"nombre\": \"Monitor 24 pulgadas Curvo\",\n  \"precio\": 850,\n  \"stock\": 3\n}"
+          "raw": "{\n  \"nombre\": \"Laptop Gamer RTX\",\n  \"precio\": 2800,\n  \"stock\": 8\n}"
         },
-        "url": "http://localhost:3000/productos/1"
-      }
+        "url": {
+          "raw": "http://localhost:3000/productos/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "productos",
+            "1"
+          ]
+        },
+        "description": "Actualiza la información de un producto por ID con status 200 OK."
+      },
+      "response": [
+        {
+          "name": "200 OK - Producto actualizado",
+          "originalRequest": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Laptop Gamer RTX\",\n  \"precio\": 2800,\n  \"stock\": 8\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/productos/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "productos",
+                "1"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json; charset=utf-8"
+            }
+          ],
+          "body": "{\n  \"id\": 1,\n  \"nombre\": \"Laptop Gamer RTX\",\n  \"precio\": 2800,\n  \"stock\": 8\n}"
+        }
+      ]
     },
     {
       "name": "5. Eliminar producto (DELETE)",
       "request": {
         "method": "DELETE",
-        "url": "http://localhost:3000/productos/1"
-      }
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/productos/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "productos",
+            "1"
+          ]
+        },
+        "description": "Elimina un producto por ID del arreglo en memoria retornando mensaje de confirmación."
+      },
+      "response": [
+        {
+          "name": "200 OK - Producto eliminado",
+          "originalRequest": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/productos/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "productos",
+                "1"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json; charset=utf-8"
+            }
+          ],
+          "body": "{\n  \"mensaje\": \"Producto con ID 1 eliminado con éxito\"\n}"
+        }
+      ]
     }
   ]
 }

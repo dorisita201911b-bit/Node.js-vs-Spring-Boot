@@ -15,6 +15,20 @@ let productos = [
 
 // 4. RUTAS DEL CRUD (Endpoints)
 
+// GET: Ruta raíz de bienvenida
+app.get('/', (req, res) => {
+  res.json({
+    mensaje: 'API REST de Productos con Node.js y Express lista y en funcionamiento',
+    endpoints: [
+      'GET /productos',
+      'GET /productos/:id',
+      'POST /productos',
+      'PUT /productos/:id',
+      'DELETE /productos/:id'
+    ]
+  });
+});
+
 // GET: Obtener todos los productos
 app.get('/productos', (req, res) => {
   res.json(productos);
