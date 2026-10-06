@@ -1,0 +1,57 @@
+{
+  "info": {
+    "name": "API Productos Node.js - CRUD",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. Obtener todos los productos (GET)",
+      "request": {
+        "method": "GET",
+        "url": "http://localhost:3000/productos"
+      }
+    },
+    {
+      "name": "2. Obtener producto por ID (GET)",
+      "request": {
+        "method": "GET",
+        "url": "http://localhost:3000/productos/1"
+      }
+    },
+    {
+      "name": "3. Crear un nuevo producto (POST)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"Monitor 24 pulgadas\",\n  \"precio\": 800,\n  \"stock\": 5\n}"
+        },
+        "url": "http://localhost:3000/productos"
+      }
+    },
+    {
+      "name": "4. Actualizar producto (PUT)",
+      "request": {
+        "method": "PUT",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"Monitor 24 pulgadas Curvo\",\n  \"precio\": 850,\n  \"stock\": 3\n}"
+        },
+        "url": "http://localhost:3000/productos/1"
+      }
+    },
+    {
+      "name": "5. Eliminar producto (DELETE)",
+      "request": {
+        "method": "DELETE",
+        "url": "http://localhost:3000/productos/1"
+      }
+    }
+  ]
+}
