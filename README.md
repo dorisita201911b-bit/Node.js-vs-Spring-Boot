@@ -271,4 +271,5 @@ Para cumplir el objetivo de la exposición (*hacer que los compañeros identifiq
 * [x] **Proyecto en GitHub:** Código funcional con `index.js`, `package.json` y `.gitignore`.
 * [x] **Colección de Postman:** Archivo [`postman_collection.json`](./postman_collection.json) con peticiones y respuestas JSON embebidas.
 * [x] **Tabla Comparativa Node.js vs Spring Boot:** Documentada y explicada paso a paso.
+* [x] **Dashboard Visual Interactivo:** Interfaz web moderna servida en `http://localhost:3000` para probar el CRUD visualmente.
 * [x] **Enseñanza guiada:** Estructura preparada para enseñar a los compañeros a construir la app desde cero.

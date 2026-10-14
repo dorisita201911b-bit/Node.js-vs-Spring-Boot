@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>API REST de Productos | Node.js & Express</title>
+  <meta name="description" content="Dashboard interactivo para la gestión y prueba del CRUD de Productos con Node.js y Express.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+  <!-- Ambient Glow Background -->
+  <div class="glow-bg glow-1"></div>
+  <div class="glow-bg glow-2"></div>
+
+  <!-- Header -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand">
+        <div class="brand-icon">⚡</div>
+        <div class="brand-info">
+          <div class="brand-title-row">
+            <h1>API Productos Express</h1>
+            <span class="badge badge-tech">Node.js + Express 5</span>
+          </div>
+          <p class="brand-subtitle">Panel interactivo del CRUD & Explorador de Endpoints REST</p>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <div class="status-indicator" title="Servidor funcionando correctamente">
+          <span class="status-dot"></span>
+          <span>Online :3000</span>
+        </div>
+        <button id="btnOpenApiModal" class="btn btn-secondary">
+          <span class="btn-icon">🧪</span>
+          <span>Ver JSON / Endpoints</span>
+        </button>
+        <button id="btnOpenCreateModal" class="btn btn-primary">
+          <span class="btn-icon">＋</span>
+          <span>Nuevo Producto</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="main-content">
+    
+    <!-- Metrics Section -->
+    <section class="metrics-grid" aria-label="Métricas del Inventario">
+      <div class="metric-card">
+        <div class="metric-icon">📦</div>
+        <div class="metric-info">
+          <span class="metric-label">Total Productos</span>
+          <span class="metric-value" id="metricTotalProducts">0</span>
+        </div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-icon">💰</div>
+        <div class="metric-info">
+          <span class="metric-label">Valor en Inventario</span>
+          <span class="metric-value" id="metricTotalValue">$0</span>
+        </div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-icon">📊</div>
+        <div class="metric-info">
+          <span class="metric-label">Unidades en Stock</span>
+          <span class="metric-value" id="metricTotalStock">0</span>
+        </div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-icon">🏷️</div>
+        <div class="metric-info">
+          <span class="metric-label">Precio Promedio</span>
+          <span class="metric-value" id="metricAvgPrice">$0</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Toolbar: Search, Filters & Sorting -->
+    <section class="toolbar-section">
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="searchInput" placeholder="Buscar por nombre, categoría o ID..." autocomplete="off">
+        <button id="btnClearSearch" class="btn-clear hidden" title="Limpiar búsqueda">✕</button>
+      </div>
+
+      <div class="toolbar-controls">
+        <div class="categories-scroll" id="categoryChips">
+          <button class="chip active" data-category="ALL">Todos</button>
+          <button class="chip" data-category="Computadores">Computadores</button>
+          <button class="chip" data-category="Periféricos">Periféricos</button>
+          <button class="chip" data-category="Monitores">Monitores</button>
+          <button class="chip" data-category="Audio">Audio</button>
+          <button class="chip" data-category="Componentes">Componentes</button>
+          <button class="chip" data-category="Accesorios">Accesorios</button>
+          <button class="chip" data-category="Mobiliario">Mobiliario</button>
+        </div>
+
+        <div class="sort-wrapper">
+          <label for="sortSelect">Ordenar:</label>
+          <select id="sortSelect" class="custom-select">
+            <option value="id-asc">ID (1 - 9)</option>
+            <option value="id-desc">ID (9 - 1)</option>
+            <option value="price-asc">Precio: Menor a Mayor</option>
+            <option value="price-desc">Precio: Mayor a Menor</option>
+            <option value="stock-desc">Mayor Stock</option>
+            <option value="name-asc">Nombre (A - Z)</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <!-- Product Grid Section -->
+    <section class="catalog-section">
+      <div class="section-header">
+        <h2 id="catalogTitle">Catálogo de Productos</h2>
+        <span class="count-badge" id="productCount">Cargando...</span>
+      </div>
+
+      <!-- Loading State -->
+      <div id="loadingState" class="state-container">
+        <div class="spinner"></div>
+        <p>Cargando productos de la API...</p>
+      </div>
+
+      <!-- Empty State -->
+      <div id="emptyState" class="state-container hidden">
+        <div class="empty-icon">🔎</div>
+        <h3>No se encontraron productos</h3>
+        <p>Intenta cambiar el término de búsqueda o selecciona otra categoría.</p>
+        <button id="btnResetFilters" class="btn btn-secondary mt-3">Restablecer filtros</button>
+      </div>
+
+      <!-- Products Grid -->
+      <div id="productsGrid" class="products-grid">
+        <!-- Tarjetas dinámicas inyectadas vía app.js -->
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Modal: Crear / Editar Producto -->
+  <div id="productModal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <span id="modalIconPreview" class="modal-icon-badge">📦</span>
+          <h3 id="modalTitle">Nuevo Producto</h3>
+        </div>
+        <button id="btnCloseModal" class="btn-close" aria-label="Cerrar modal">✕</button>
+      </div>
+
+      <form id="productForm" class="modal-form">
+        <input type="hidden" id="formProductId">
+
+        <div class="form-group">
+          <label for="formNombre">Nombre del Producto <span class="required">*</span></label>
+          <input type="text" id="formNombre" required placeholder="Ej. Monitor Gamer 27 pulgadas" maxlength="80">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="formPrecio">Precio ($ USD) <span class="required">*</span></label>
+            <input type="number" id="formPrecio" required min="0.01" step="0.01" placeholder="Ej. 199.99">
+          </div>
+
+          <div class="form-group">
+            <label for="formStock">Stock (Unidades) <span class="required">*</span></label>
+            <input type="number" id="formStock" required min="0" step="1" placeholder="Ej. 25">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="formCategoria">Categoría</label>
+            <select id="formCategoria" class="custom-select">
+              <option value="Computadores">Computadores</option>
+              <option value="Periféricos">Periféricos</option>
+              <option value="Monitores">Monitores</option>
+              <option value="Audio">Audio</option>
+              <option value="Componentes">Componentes</option>
+              <option value="Accesorios">Accesorios</option>
+              <option value="Mobiliario">Mobiliario</option>
+              <option value="General">General</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="formIcono">Ícono / Emoji</label>
+            <div class="emoji-selector-row">
+              <input type="text" id="formIcono" maxlength="4" value="📦" class="icon-input">
+              <div class="emoji-presets">
+                <button type="button" class="btn-emoji" data-emoji="💻">💻</button>
+                <button type="button" class="btn-emoji" data-emoji="🖥️">🖥️</button>
+                <button type="button" class="btn-emoji" data-emoji="🖱️">🖱️</button>
+                <button type="button" class="btn-emoji" data-emoji="⌨️">⌨️</button>
+                <button type="button" class="btn-emoji" data-emoji="🎧">🎧</button>
+                <button type="button" class="btn-emoji" data-emoji="💾">💾</button>
+                <button type="button" class="btn-emoji" data-emoji="⚡">⚡</button>
+                <button type="button" class="btn-emoji" data-emoji="🪑">🪑</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" id="btnCancelForm" class="btn btn-secondary">Cancelar</button>
+          <button type="submit" id="btnSaveProduct" class="btn btn-primary">
+            <span class="btn-spinner hidden"></span>
+            <span id="btnSaveText">Guardar Producto</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Confirmar Eliminación -->
+  <div id="deleteModal" class="modal-overlay hidden" role="dialog" aria-modal="true">
+    <div class="modal-card modal-sm">
+      <div class="delete-icon-wrap">⚠️</div>
+      <h3 class="delete-title">¿Eliminar Producto?</h3>
+      <p class="delete-text">Esta acción eliminará <strong id="deleteProductName">este producto</strong> de la memoria del servidor a través del endpoint <code>DELETE /productos/:id</code>.</p>
+      
+      <div class="modal-footer justify-center">
+        <button type="button" id="btnCancelDelete" class="btn btn-secondary">Cancelar</button>
+        <button type="button" id="btnConfirmDelete" class="btn btn-danger">Sí, Eliminar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Explorador de Endpoints & JSON -->
+  <div id="apiModal" class="modal-overlay hidden" role="dialog" aria-modal="true">
+    <div class="modal-card modal-lg">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <span class="modal-icon-badge">🧪</span>
+          <h3>Explorador de API REST & JSON</h3>
+        </div>
+        <button id="btnCloseApiModal" class="btn-close" aria-label="Cerrar modal">✕</button>
+      </div>
+
+      <div class="api-tabs">
+        <button class="api-tab active" data-tab="liveJson">Datos en Vivo (GET /productos)</button>
+        <button class="api-tab" data-tab="endpoints">Guía de Endpoints CRUD</button>
+      </div>
+
+      <div class="api-tab-content">
+        <!-- Live JSON Tab -->
+        <div id="tabLiveJson" class="tab-pane active">
+          <div class="json-header-bar">
+            <span>Respuesta JSON actual del servidor (<code>http://localhost:3000/productos</code>)</span>
+            <div class="json-actions">
+              <button id="btnCopyJson" class="btn btn-sm btn-secondary">📋 Copiar JSON</button>
+              <button id="btnRefreshJson" class="btn btn-sm btn-secondary">🔄 Actualizar</button>
+              <a href="/productos" target="_blank" class="btn btn-sm btn-secondary">🔗 Abrir en pestaña</a>
+            </div>
+          </div>
+          <pre class="json-viewer"><code id="rawJsonCode">// Cargando JSON...</code></pre>
+        </div>
+
+        <!-- Endpoints Guide Tab -->
+        <div id="tabEndpoints" class="tab-pane">
+          <div class="endpoints-list">
+            
+            <div class="endpoint-card">
+              <div class="endpoint-head">
+                <span class="http-badge get">GET</span>
+                <code>/productos</code>
+                <span class="endpoint-desc">Listar todos los productos</span>
+              </div>
+              <p class="endpoint-detail">Retorna un array JSON con todos los productos registrados en memoria.</p>
+            </div>
+
+            <div class="endpoint-card">
+              <div class="endpoint-head">
+                <span class="http-badge get">GET</span>
+                <code>/productos/:id</code>
+                <span class="endpoint-desc">Consultar un producto por ID</span>
+              </div>
+              <p class="endpoint-detail">Retorna el objeto JSON del producto correspondiente, o <code>404 Not Found</code>.</p>
+            </div>
+
+            <div class="endpoint-card">
+              <div class="endpoint-head">
+                <span class="http-badge post">POST</span>
+                <code>/productos</code>
+                <span class="endpoint-desc">Crear un nuevo producto</span>
+              </div>
+              <p class="endpoint-detail">Recibe <code>{ nombre, precio, stock, categoria, icono }</code> en el body y retorna <code>201 Created</code>.</p>
+            </div>
+
+            <div class="endpoint-card">
+              <div class="endpoint-head">
+                <span class="http-badge put">PUT</span>
+                <code>/productos/:id</code>
+                <span class="endpoint-desc">Actualizar un producto</span>
+              </div>
+              <p class="endpoint-detail">Modifica los atributos del producto especificado por ID y retorna el objeto actualizado.</p>
+            </div>
+
+            <div class="endpoint-card">
+              <div class="endpoint-head">
+                <span class="http-badge delete">DELETE</span>
+                <code>/productos/:id</code>
+                <span class="endpoint-desc">Eliminar producto por ID</span>
+              </div>
+              <p class="endpoint-detail">Remueve el producto del arreglo en memoria y retorna mensaje de confirmación.</p>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" id="btnCloseApiModalBottom" class="btn btn-primary">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toastContainer" class="toast-container" aria-live="polite"></div>
+
+  <footer class="app-footer">
+    <p>Desarrollado con <strong>Node.js + Express 5</strong> • Comparativa Técnica Spring Boot vs Node.js</p>
+  </footer>
+
+  <script src="/app.js"></script>
+</body>
+</html>
